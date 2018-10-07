@@ -3,7 +3,7 @@ package com.lyl.demo.aliyun.test;
 import com.battcn.swagger.properties.ApiDataType;
 import com.battcn.swagger.properties.ApiParamType;
 import com.lyl.demo.aliyun.TestPostCont;
-import com.lyl.demo.aliyun.loallock.LocalLock;
+import com.lyl.demo.aliyun.dulplicate.annotation.AvoidDuplicateSubmission;
 import com.lyl.demo.aliyun.lock.CacheLock;
 import com.lyl.demo.aliyun.lock.CacheParam;
 import io.swagger.annotations.ApiImplicitParam;
@@ -377,11 +377,18 @@ public class TestController {
         return "success - " + token;
     }
 
-    @LocalLock(key = "lyl")
-    @GetMapping("/test/local/Lock")
-    public String testLocalLock(Integer token){
-        System.out.println("进入了");
-        return "testLocalLock " + token;
+    @AvoidDuplicateSubmission(needSaveToken = true)
+    @GetMapping("/test/avoid/save")
+    public String testAvoid(){
+        System.out.println("needSaveToken");
+        return "needSaveToken";
+    }
+
+    @AvoidDuplicateSubmission(needRemoveToken = true)
+    @GetMapping("/test/avoid/remove")
+    public String testNeedRemoveToken(){
+        System.out.println("needRemoveToken");
+        return "needRemoveToken";
     }
 
 }

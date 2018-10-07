@@ -8,11 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //@EnableCaching
 //@EnableSwagger2Doc // 访问http://localhost:8080/swagger-ui.html
 //@EnableAdminServer // 访问http://localhost:8080/login
+
 public class AliyunDemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AliyunDemoApplication.class, args);
     }
+
+
 
     /**
      * dev 环境加载
