@@ -1,4 +1,4 @@
-package com.lyl.demo.aliyun.lock;
+package com.lyl.demo.aliyun.lock.annotation;
 
 import java.lang.annotation.*;
 

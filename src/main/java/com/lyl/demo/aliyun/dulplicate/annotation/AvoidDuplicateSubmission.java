@@ -47,6 +47,11 @@ public @interface AvoidDuplicateSubmission {
     boolean needRemoveToken() default false;
 
     /**
+     * redis前缀
+     */
+    String prefix() default "";
+
+    /**
      * 过期秒数 默认1分钟
      */
     int expire() default 60;

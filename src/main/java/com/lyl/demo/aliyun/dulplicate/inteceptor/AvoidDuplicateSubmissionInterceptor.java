@@ -1,20 +1,14 @@
 package com.lyl.demo.aliyun.dulplicate.inteceptor;
 
 import com.lyl.demo.aliyun.dulplicate.annotation.AvoidDuplicateSubmission;
-import com.lyl.demo.aliyun.lock.CacheKeyGenerator;
+import com.lyl.demo.aliyun.enable.RedisTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisStringCommands;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.types.Expiration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,23 +22,23 @@ import java.util.UUID;
  *
  */
 @Aspect
-@Configuration
 @Slf4j
 public class AvoidDuplicateSubmissionInterceptor{
 
-    private static final String prefix = "com:lyl";
+    @Value("${spring.avoid.dulplicate.prefix}")
+    private String prefix;
 
-    private final StringRedisTemplate lockRedisTemplate;
+    @Autowired
+    private final RedisTemplate redisTemplate;
     @Autowired
     private HttpServletRequest request;
     @Autowired
     private HttpServletResponse response;
 
     @Autowired
-    public AvoidDuplicateSubmissionInterceptor(StringRedisTemplate lockRedisTemplate, CacheKeyGenerator cacheKeyGenerator){
-        this.lockRedisTemplate = lockRedisTemplate;
+    public AvoidDuplicateSubmissionInterceptor(RedisTemplate redisTemplate){
+        this.redisTemplate = redisTemplate;
     }
-
 
     @Around("execution(public * *(..)) && @annotation(com.lyl.demo.aliyun.dulplicate.annotation.AvoidDuplicateSubmission)")
     public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
@@ -62,7 +56,7 @@ public class AvoidDuplicateSubmissionInterceptor{
 
         //如果需要移除key值 表示用户表单提交成功
         if (avoidDuplicateSubmission.needRemoveToken()){
-            if (lockRedisTemplate.delete(validateKey(request))){
+            if (redisTemplate.delete(validateKey(request, avoidDuplicateSubmission.prefix()))){
                 return pjp.proceed();
             }
             throw new RuntimeException("请勿重复提交表单");
@@ -70,15 +64,9 @@ public class AvoidDuplicateSubmissionInterceptor{
 
         //需要保存key值 通常用在提交表单，支付等插入数据库操作的前置操作
         if (avoidDuplicateSubmission.needSaveToken()){
-            final String lockKey = generateKey(response);
+            final String lockKey = generateKey(response, avoidDuplicateSubmission.prefix());
             try {
-                //采用原生API
-                final Boolean success = lockRedisTemplate.execute(new RedisCallback<Boolean>() {
-                    @Override
-                    public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
-                        return connection.set(lockKey.getBytes(), new byte[0], Expiration.from(avoidDuplicateSubmission.expire(), avoidDuplicateSubmission.timeUnit()), RedisStringCommands.SetOption.SET_IF_ABSENT);
-                    }
-                });
+                final Boolean success = redisTemplate.set(lockKey, "", avoidDuplicateSubmission.expire());
                 if (success){
                     return pjp.proceed();
                 }
@@ -90,10 +78,10 @@ public class AvoidDuplicateSubmissionInterceptor{
         throw new RuntimeException("系统异常");
     }
 
-    public String generateKey(HttpServletResponse response){
+    public String generateKey(HttpServletResponse response, String annotationPrefix){
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         String key = new StringBuffer()
-                .append(prefix)
+                .append(annotationPrefix.equals("") ? prefix : annotationPrefix)
                 .append(":")
                 .append(token)
                 .toString();
@@ -101,10 +89,10 @@ public class AvoidDuplicateSubmissionInterceptor{
         return key;
     }
 
-    public String validateKey(HttpServletRequest request){
+    public String validateKey(HttpServletRequest request, String annotationPrefix){
         String token = request.getHeader("d-token");
         return new StringBuffer()
-                .append(prefix)
+                .append(annotationPrefix.equals("") ? prefix : annotationPrefix)
                 .append(":")
                 .append(token)
                 .toString();

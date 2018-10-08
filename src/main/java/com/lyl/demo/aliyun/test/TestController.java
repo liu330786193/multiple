@@ -4,8 +4,10 @@ import com.battcn.swagger.properties.ApiDataType;
 import com.battcn.swagger.properties.ApiParamType;
 import com.lyl.demo.aliyun.TestPostCont;
 import com.lyl.demo.aliyun.dulplicate.annotation.AvoidDuplicateSubmission;
-import com.lyl.demo.aliyun.lock.CacheLock;
-import com.lyl.demo.aliyun.lock.CacheParam;
+import com.lyl.demo.aliyun.dulplicate.autoconfig.EnableAvoidDulplicateFormConfiguration;
+import com.lyl.demo.aliyun.enable.EnableLettuceConfiguration;
+import com.lyl.demo.aliyun.lock.annotation.CacheLock;
+import com.lyl.demo.aliyun.lock.annotation.CacheParam;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +52,8 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @Slf4j
+@EnableLettuceConfiguration
+@EnableAvoidDulplicateFormConfiguration
 public class TestController {
 
     public static final String APP_ID = "2016122204530085";
@@ -390,5 +394,6 @@ public class TestController {
         System.out.println("needRemoveToken");
         return "needRemoveToken";
     }
+
 
 }

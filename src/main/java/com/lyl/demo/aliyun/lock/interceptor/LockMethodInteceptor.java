@@ -1,8 +1,13 @@
-package com.lyl.demo.aliyun.lock;
+package com.lyl.demo.aliyun.lock.interceptor;
 
+import com.lyl.demo.aliyun.enable.RedisTemplate;
+import com.lyl.demo.aliyun.lock.annotation.CacheLock;
+import com.lyl.demo.aliyun.lock.annotation.CacheParam;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -13,14 +18,44 @@ import java.lang.reflect.Parameter;
 
 /**
  * @Author lyl
- * @Description 通过接口注入的方式去写不同的生成规则;
- * @Date 2018/9/30 上午10:21
+ * @Description
+ * @Date 2018/9/30 上午10:31
  */
-@Component
-public class LockKeyGenerator implements CacheKeyGenerator {
+@Aspect
+public class LockMethodInteceptor {
 
+    private RedisTemplate redisTemplate;
 
-    @Override
+    @Autowired
+    public LockMethodInteceptor(RedisTemplate redisTemplate){
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Around("execution(public * *(..)) && @annotation(com.lyl.demo.aliyun.lock.annotation.CacheLock)")
+    public Object interceptor(ProceedingJoinPoint pjp){
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        Method method = signature.getMethod();
+        CacheLock lock = method.getAnnotation(CacheLock.class);
+        if (StringUtils.isEmpty(lock)){
+            throw new RuntimeException();
+        }
+        final String lockKey = getLockKey(pjp);
+        try {
+            final Boolean success = redisTemplate.set(lockKey, "", lock.expire());
+            if (!success){
+                throw new RuntimeException("请勿重复请求");
+            }
+            try {
+                return pjp.proceed();
+            } catch (Throwable throwable){
+                throw new RuntimeException("系统异常");
+            }
+
+        } finally {
+            redisTemplate.delete(lockKey);
+        }
+    }
+
     public String getLockKey(ProceedingJoinPoint pjp) {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
