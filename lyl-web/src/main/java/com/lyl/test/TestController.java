@@ -8,6 +8,8 @@ import com.lyl.core.dulplicate.autoconfig.EnableAvoidDulplicateFormConfiguration
 import com.lyl.core.enable.EnableLettuceConfiguration;
 import com.lyl.core.lock.annotation.CacheLock;
 import com.lyl.core.lock.annotation.CacheParam;
+import com.lyl.distributeLimit.EnableDistributeLimitConfiguration;
+import com.lyl.distributeLimit.Limit;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author lyl
@@ -53,6 +56,7 @@ import java.util.UUID;
 @Slf4j
 @EnableLettuceConfiguration
 @EnableAvoidDulplicateFormConfiguration
+@EnableDistributeLimitConfiguration
 public class TestController {
 
     public static final String APP_ID = "2016122204530085";
@@ -392,6 +396,14 @@ public class TestController {
     public String testNeedRemoveToken(){
         System.out.println("needRemoveToken");
         return "needRemoveToken";
+    }
+
+    private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger();
+    @Limit(key = "test:limit", period = 100, count = 10)
+    @GetMapping("/test/limit")
+    public int testLimiter() {
+        // 意味著 100S 内最多允許訪問10次
+        return ATOMIC_INTEGER.incrementAndGet();
     }
 
 
