@@ -43,7 +43,9 @@ public class LockMethodInteceptor {
         try {
             final Boolean success = redisTemplate.set(lockKey, "", lock.expire());
             if (!success){
-                throw new RuntimeException("请勿重复请求");
+//                throw new RuntimeException("请勿重复请求");
+                System.out.println("请勿重复请求");
+                return false;
             }
             try {
                 return pjp.proceed();
@@ -52,7 +54,7 @@ public class LockMethodInteceptor {
             }
 
         } finally {
-            redisTemplate.delete(lockKey);
+//            redisTemplate.delete(lockKey);
         }
     }
 

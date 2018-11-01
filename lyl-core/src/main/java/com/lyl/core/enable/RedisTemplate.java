@@ -1,9 +1,9 @@
 package com.lyl.core.enable;
 
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.SetArgs;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.support.ConnectionPoolSupport;
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.SetArgs;
+import com.lambdaworks.redis.api.StatefulRedisConnection;
+import com.lambdaworks.redis.support.ConnectionPoolSupport;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;

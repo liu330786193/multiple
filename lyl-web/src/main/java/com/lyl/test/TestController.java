@@ -54,9 +54,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @RestController
 @Slf4j
-@EnableLettuceConfiguration
-@EnableAvoidDulplicateFormConfiguration
-@EnableDistributeLimitConfiguration
+//@EnableLettuceConfiguration
+//@EnableAvoidDulplicateFormConfiguration
+//@EnableDistributeLimitConfiguration
 public class TestController {
 
     public static final String APP_ID = "2016122204530085";
@@ -244,7 +244,7 @@ public class TestController {
         System.out.println(id);
     }*/
 
-    @GetMapping(value = "/test/es")
+    /*@GetMapping(value = "/test/es")
     public void testElasticsearch() throws UnknownHostException {
         String ip = "localhost";
         Settings settings = Settings.builder()
@@ -404,7 +404,12 @@ public class TestController {
     public int testLimiter() {
         // 意味著 100S 内最多允許訪問10次
         return ATOMIC_INTEGER.incrementAndGet();
-    }
+    }*/
 
+    @GetMapping("/test/submit")
+    @CacheLock(prefix = "com.lyl")
+    public void testSubmit(){
+        System.out.println("test avoid");
+    }
 
 }

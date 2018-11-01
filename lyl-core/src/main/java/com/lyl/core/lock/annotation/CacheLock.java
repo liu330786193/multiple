@@ -22,7 +22,7 @@ public @interface CacheLock {
     /**
      * 过期秒数
      */
-    int expire() default 5;
+    int expire() default 5000;
 
     /**
      * <p>

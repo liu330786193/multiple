@@ -1,7 +1,7 @@
 package com.lyl.core.enable;
 
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisURI;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
