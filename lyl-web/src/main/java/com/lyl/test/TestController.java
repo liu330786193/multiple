@@ -1,51 +1,13 @@
 package com.lyl.test;
 
-import com.battcn.swagger.properties.ApiDataType;
-import com.battcn.swagger.properties.ApiParamType;
 import com.lyl.TestPostCont;
-import com.lyl.core.dulplicate.annotation.AvoidDuplicateSubmission;
-import com.lyl.core.dulplicate.autoconfig.EnableAvoidDulplicateFormConfiguration;
-import com.lyl.core.enable.EnableLettuceConfiguration;
 import com.lyl.core.lock.annotation.CacheLock;
-import com.lyl.core.lock.annotation.CacheParam;
-import com.lyl.distributeLimit.EnableDistributeLimitConfiguration;
-import com.lyl.distributeLimit.Limit;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author lyl
