@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Collectors;
+
 /**
  * @Author lyl
  * @Description
@@ -371,7 +373,10 @@ public class TestController {
     @GetMapping("/test/submit")
     @CacheLock(prefix = "com.lyl")
     public void testSubmit(){
+         Collectors.toMap(null, null);
         System.out.println("test avoid");
     }
+
+
 
 }

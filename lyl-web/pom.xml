@@ -111,16 +111,23 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.2.1</version>
         </dependency>
-<!--        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>3.2.0.RELEASE</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
-            <groupId>io.lettuce</groupId>
-            <artifactId>lettuce-core</artifactId>
-            <version>5.0.5.RELEASE</version>
-        </dependency>-->
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.51</version>
+        </dependency>
+
+        <!--        <dependency>
+                    <groupId>io.projectreactor</groupId>
+                    <artifactId>reactor-core</artifactId>
+                    <version>3.2.0.RELEASE</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.lettuce</groupId>
+                    <artifactId>lettuce-core</artifactId>
+                    <version>5.0.5.RELEASE</version>
+                </dependency>-->
         <!--<dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
