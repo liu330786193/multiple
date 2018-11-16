@@ -8,5 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="open-sdk.1.0.8" level="project" />
+    <orderEntry type="library" name="sadk-3.2.0.5" level="project" />
   </component>
 </module>
